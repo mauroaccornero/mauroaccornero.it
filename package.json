@@ -1,0 +1,26 @@
+{
+  "name": "mauroaccornero.it",
+  "version": "1.0.0",
+  "description": "mauro accornero personal website",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next -p 8080",
+    "build": "next build && next export",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mauroaccornero/mauroaccornero.it.git"
+  },
+  "author": "mauro accornero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mauroaccornero/mauroaccornero.it/issues"
+  },
+  "homepage": "https://github.com/mauroaccornero/mauroaccornero.it#readme",
+  "dependencies": {
+    "next": "^9.3.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
