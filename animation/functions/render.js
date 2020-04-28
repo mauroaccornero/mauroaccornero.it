@@ -10,26 +10,35 @@ export function render (
     target,
     config,
     gl,
-    dye,
-    bloom,
-    sunrays,
-    sunraysTemp,
-    colorProgram,
     blit,
-    checkerboardProgram,
     canvas,
     displayMaterial,
     ditheringTexture,
-    bloomFramebuffers,
-    bloomFinalProgram,
-    bloomPrefilterProgram,
-    bloomBlurProgram,
-    blurProgram,
-    sunraysMaskProgram,
-    sunraysProgram,
+    parameters,
+    programs
 ) {
-    if (config.BLOOM)
-        applyBloom(dye.read, bloom,  gl, config, bloomFramebuffers, bloomFinalProgram, bloomPrefilterProgram, bloomBlurProgram, blit);
+    const {
+        bloomFinalProgram,
+        bloomPrefilterProgram,
+        bloomBlurProgram,
+        sunraysMaskProgram,
+        sunraysProgram,
+        blurProgram,
+        colorProgram,
+        checkerboardProgram
+    } = programs
+
+    const {
+        bloom,
+        dye,
+        sunrays,
+        sunraysTemp,
+        bloomFramebuffers,
+    } = parameters
+
+    if (config.BLOOM) {
+        applyBloom(dye.read, bloom, gl, config, bloomFramebuffers, bloomFinalProgram, bloomPrefilterProgram, bloomBlurProgram, blit);
+    }
     if (config.SUNRAYS) {
         applySunrays(dye.read, dye.write, sunrays, gl, sunraysMaskProgram, blit, sunraysProgram, config);
         blur(sunrays, sunraysTemp, 1,gl, blit, blurProgram);
@@ -38,8 +47,7 @@ export function render (
     if (target == null || !config.TRANSPARENT) {
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
-    }
-    else {
+    }else {
         gl.disable(gl.BLEND);
     }
 
@@ -48,9 +56,11 @@ export function render (
     gl.viewport(0, 0, width, height);
 
     let fbo = target == null ? null : target.fbo;
-    if (!config.TRANSPARENT)
+    if (!config.TRANSPARENT){
         drawColor(fbo, normalizeColor(config.BACK_COLOR), colorProgram, gl, blit);
-    if (target == null && config.TRANSPARENT)
+    }
+    if (target == null && config.TRANSPARENT) {
         drawCheckerboard(fbo, gl, blit, checkerboardProgram, canvas);
+    }
     drawDisplay(fbo, width, height, gl, blit, config, displayMaterial, ditheringTexture, dye, bloom, sunrays);
 }

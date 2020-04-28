@@ -1,6 +1,9 @@
 import { correctRadius} from "./correctRadius";
 
-export function splat (x, y, dx, dy, color, velocity, gl, blit, dye, splatProgram, canvas, config) {
+export function splat (x, y, dx, dy, color, parameters, gl, blit, programs, canvas, config) {
+    const { velocity, dye } = parameters
+    const { splatProgram } = programs
+
     gl.viewport(0, 0, velocity.width, velocity.height);
     splatProgram.bind();
     gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read.attach(0));

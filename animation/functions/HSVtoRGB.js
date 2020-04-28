@@ -1,4 +1,4 @@
-export function HSVtoRGB (h, s, v) {
+export const HSVtoRGB = (h, s, v) =>{
     let r, g, b, i, f, p, q, t;
     i = Math.floor(h * 6);
     f = h * 6 - i;

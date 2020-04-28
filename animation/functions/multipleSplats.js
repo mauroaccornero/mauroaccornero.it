@@ -1,7 +1,7 @@
 import {generateColor} from "./generateColor";
 import { splat} from "./splat";
 
-export function multipleSplats(amount, velocity, gl, blit, dye, splatProgram, canvas, config) {
+export function multipleSplats(amount, parameters, gl, blit, programs, canvas, config) {
     for (let i = 0; i < amount; i++) {
         const color = generateColor();
         color.r *= 10.0;
@@ -11,6 +11,6 @@ export function multipleSplats(amount, velocity, gl, blit, dye, splatProgram, ca
         const y = Math.random();
         const dx = 1000 * (Math.random() - 0.5);
         const dy = 1000 * (Math.random() - 0.5);
-        splat(x, y, dx, dy, color, velocity, gl, blit, dye, splatProgram, canvas, config)
+        splat(x, y, dx, dy, color, parameters, gl, blit, programs,  canvas, config)
     }
 }

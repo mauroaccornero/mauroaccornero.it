@@ -1,7 +1,7 @@
-import { splat} from "./splat";
+import {splat} from "./splat";
 
-export function splatPointer (pointer, config, velocity, gl, blit, dye, splatProgram, canvas) {
+export function splatPointer(pointer, config, parameters, gl, blit, programs, canvas) {
     let dx = pointer.deltaX * config.SPLAT_FORCE;
     let dy = pointer.deltaY * config.SPLAT_FORCE;
-    splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color, velocity, gl, blit, dye, splatProgram,canvas, config);
+    splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color, parameters, gl, blit, programs, canvas, config);
 }

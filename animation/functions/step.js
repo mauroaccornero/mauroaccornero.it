@@ -2,21 +2,29 @@ export function step (
     dt,
     gl,
     config,
-    velocity,
-    curlProgram,
     blit,
-    vorticityProgram,
-    divergenceProgram,
-    clearProgram,
-    pressure,
-    pressureProgram,
-    gradienSubtractProgram,
-    advectionProgram,
     ext,
-    dye,
-    curl,
-    divergence
+    parameters,
+    programs
 ) {
+    const {
+        curlProgram,
+        vorticityProgram,
+        divergenceProgram,
+        clearProgram,
+        pressureProgram,
+        gradienSubtractProgram,
+        advectionProgram
+    } = programs
+
+    const {
+        velocity,
+        dye,
+        pressure,
+        curl,
+        divergence
+    } = parameters
+
     gl.disable(gl.BLEND);
     gl.viewport(0, 0, velocity.width, velocity.height);
 
@@ -63,8 +71,9 @@ export function step (
 
     advectionProgram.bind();
     gl.uniform2f(advectionProgram.uniforms.texelSize, velocity.texelSizeX, velocity.texelSizeY);
-    if (!ext.supportLinearFiltering)
+    if (!ext.supportLinearFiltering){
         gl.uniform2f(advectionProgram.uniforms.dyeTexelSize, velocity.texelSizeX, velocity.texelSizeY);
+    }
     let velocityId = velocity.read.attach(0);
     gl.uniform1i(advectionProgram.uniforms.uVelocity, velocityId);
     gl.uniform1i(advectionProgram.uniforms.uSource, velocityId);
@@ -75,8 +84,9 @@ export function step (
 
     gl.viewport(0, 0, dye.width, dye.height);
 
-    if (!ext.supportLinearFiltering)
+    if (!ext.supportLinearFiltering) {
         gl.uniform2f(advectionProgram.uniforms.dyeTexelSize, dye.texelSizeX, dye.texelSizeY);
+    }
     gl.uniform1i(advectionProgram.uniforms.uVelocity, velocity.read.attach(0));
     gl.uniform1i(advectionProgram.uniforms.uSource, dye.read.attach(1));
     gl.uniform1f(advectionProgram.uniforms.dissipation, config.DENSITY_DISSIPATION);

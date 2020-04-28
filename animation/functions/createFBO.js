@@ -1,5 +1,6 @@
 export function createFBO (w, h, internalFormat, format, type, param, gl) {
     gl.activeTexture(gl.TEXTURE0);
+
     let texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, param);

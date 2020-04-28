@@ -1,14 +1,15 @@
 import { getResolution} from "./getResolution";
 import { createFBO} from "./createFBO";
 
-export function initBloomFramebuffers (ext, bloomFramebuffers, bloom, config, gl) {
+export function initBloomFramebuffers (ext, parameters, config, gl) {
+    const { bloomFramebuffers } = parameters
     let res = getResolution(config.BLOOM_RESOLUTION, gl);
 
     const texType = ext.halfFloatTexType;
     const rgba = ext.formatRGBA;
     const filtering = ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST;
 
-    bloom = createFBO(res.width, res.height, rgba.internalFormat, rgba.format, texType, filtering, gl);
+    let bloom = createFBO(res.width, res.height, rgba.internalFormat, rgba.format, texType, filtering, gl);
 
     bloomFramebuffers.length = 0;
     for (let i = 0; i < config.BLOOM_ITERATIONS; i++)
@@ -22,5 +23,5 @@ export function initBloomFramebuffers (ext, bloomFramebuffers, bloom, config, gl
         bloomFramebuffers.push(fbo);
     }
 
-    return { bloom, bloomFramebuffers}
+    return { bloom, bloomFramebuffers }
 }

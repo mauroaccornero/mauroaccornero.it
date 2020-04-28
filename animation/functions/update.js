@@ -10,127 +10,63 @@ export function update (
     config,
     gl,
     ext,
-    dye,
-    velocity,
-    divergence,
-    curl,
-    pressure,
+    parameters,
     pointers,
     splatStack,
-    splatProgram,
+    programs,
     blit,
-    curlProgram,
-    vorticityProgram,
-    divergenceProgram,
-    clearProgram,
-    pressureProgram,
-    gradienSubtractProgram,
-    advectionProgram,
-    bloom,
-    sunrays,
-    sunraysTemp,
-    colorProgram,
-    checkerboardProgram,
     canvas,
     displayMaterial,
     ditheringTexture,
-    bloomFramebuffers,
-    bloomFinalProgram,
-    bloomPrefilterProgram,
-    bloomBlurProgram,
-    blurProgram,
-    sunraysMaskProgram,
     colorUpdateTimer,
     lastUpdateTime,
-    sunraysProgram,
-    copyProgram
 ) {
+    console.log(pointers)
     const dt = calcDeltaTime(lastUpdateTime);
+    let internalParameters = {...parameters}
+
     if (resizeCanvas(canvas)) {
-        /* TODO: UPADTE GLOBAL ON RESIZE */
-        initFramebuffers(config, gl, ext, dye, velocity, divergence, curl, pressure, bloomFramebuffers, bloom, sunrays, sunraysTemp, copyProgram, blit);
+        internalParameters = initFramebuffers(config, gl, ext, internalParameters, programs, blit);
     }
+
     updateColors(dt, config, pointers, colorUpdateTimer);
-    applyInputs(splatStack, pointers, velocity, gl, blit, dye, splatProgram, canvas, config);
+
+    const newSplatStack = applyInputs(splatStack, pointers, internalParameters, gl, blit, programs, canvas, config);
 
     if (!config.PAUSED) {
         step(dt,
             gl,
             config,
-            velocity,
-            curlProgram,
             blit,
-            vorticityProgram,
-            divergenceProgram,
-            clearProgram,
-            pressure,
-            pressureProgram,
-            gradienSubtractProgram,
-            advectionProgram,
             ext,
-            dye,
-            curl,
-            divergence
+            internalParameters,
+            programs
         );
     }
     render(null,
         config,
         gl,
-        dye,
-        bloom,
-        sunrays,
-        sunraysTemp,
-        colorProgram,
         blit,
-        checkerboardProgram,
         canvas,
         displayMaterial,
         ditheringTexture,
-        bloomFramebuffers,
-        bloomFinalProgram,
-        bloomPrefilterProgram,
-        bloomBlurProgram,
-        blurProgram,
-        sunraysMaskProgram,
-        sunraysProgram,
+        internalParameters,
+        programs
     );
     requestAnimationFrame(() => update(
         config,
         gl,
         ext,
-        dye,
-        velocity,
-        divergence,
-        curl,
-        pressure,
+        internalParameters,
         pointers,
-        splatStack,
-        splatProgram,
+        newSplatStack,
+        programs,
         blit,
-        curlProgram,
-        vorticityProgram,
-        divergenceProgram,
-        clearProgram,
-        pressureProgram,
-        gradienSubtractProgram,
-        advectionProgram,
-        bloom,
-        sunrays,
-        sunraysTemp,
-        colorProgram,
-        checkerboardProgram,
         canvas,
         displayMaterial,
         ditheringTexture,
-        bloomFramebuffers,
-        bloomFinalProgram,
-        bloomPrefilterProgram,
-        bloomBlurProgram,
-        blurProgram,
-        sunraysMaskProgram,
         colorUpdateTimer,
         lastUpdateTime,
-        sunraysProgram,
-        copyProgram)
+    )
     );
 }

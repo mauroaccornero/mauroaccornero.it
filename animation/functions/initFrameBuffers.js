@@ -5,7 +5,7 @@ import {initBloomFramebuffers} from "./initBloomFramebuffers";
 import {initSunraysFramebuffers} from "./initSunraysFramebuffers";
 import {createFBO} from "./createFBO";
 
-export function initFramebuffers(config, gl, ext, dye, velocity, divergence, curl, pressure, bloomFramebuffers, bloom, sunrays, sunraysTemp, copyProgram, blit) {
+export function initFramebuffers(config, gl, ext, parameters, programs, blit) {
     let simRes = getResolution(config.SIM_RESOLUTION, gl);
     let dyeRes = getResolution(config.DYE_RESOLUTION, gl);
 
@@ -15,32 +15,37 @@ export function initFramebuffers(config, gl, ext, dye, velocity, divergence, cur
     const r = ext.formatR;
     const filtering = ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST;
 
+    let dye = parameters.dye
     if (dye == null) {
         dye = createDoubleFBO(dyeRes.width, dyeRes.height, rgba.internalFormat, rgba.format, texType, filtering, gl);
     } else {
-        dye = resizeDoubleFBO(dye, dyeRes.width, dyeRes.height, rgba.internalFormat, rgba.format, texType, filtering, copyProgram, gl, blit);
+        dye = resizeDoubleFBO(dye, dyeRes.width, dyeRes.height, rgba.internalFormat, rgba.format, texType, filtering, programs.copyProgram, gl, blit);
     }
+
+    let velocity = parameters.velocity;
     if (velocity == null) {
         velocity = createDoubleFBO(simRes.width, simRes.height, rg.internalFormat, rg.format, texType, filtering, gl);
     } else {
-        velocity = resizeDoubleFBO(velocity, simRes.width, simRes.height, rg.internalFormat, rg.format, texType, filtering, copyProgram, gl, blit);
+        velocity = resizeDoubleFBO(velocity, simRes.width, simRes.height, rg.internalFormat, rg.format, texType, filtering, programs.copyProgram, gl, blit);
     }
 
-    divergence = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST, gl);
-    curl = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST, gl);
-    pressure = createDoubleFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST, gl);
+    const divergence = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST, gl);
+    const curl = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST, gl);
+    const pressure = createDoubleFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST, gl);
 
-    let bloomUpdated = initBloomFramebuffers(ext, bloomFramebuffers, bloom, config, gl);
-    const srs = initSunraysFramebuffers(sunrays, sunraysTemp, ext, gl, config);
+    let bloomObject = initBloomFramebuffers(ext, parameters, config, gl);
+    const sunraysObject = initSunraysFramebuffers( ext, gl, config);
+
     return {
+        ...parameters,
         dye,
         velocity,
         divergence,
         curl,
         pressure,
-        bloom: bloomUpdated.bloom,
-        bloomFramebuffers: bloomUpdated.bloomFramebuffers,
-        sunrays: srs.sunrays,
-        sunraysTemp: srs.sunraysTemp
+        bloom: bloomObject.bloom,
+        bloomFramebuffers: bloomObject.bloomFramebuffers,
+        sunrays: sunraysObject.sunrays,
+        sunraysTemp: sunraysObject.sunraysTemp
     }
 }
