@@ -124,7 +124,6 @@ export const useAnimation = (canvasRef) => {
         let posX = scaleByPixelRatio(e.nativeEvent.offsetX);
         let posY = scaleByPixelRatio(e.nativeEvent.offsetY);
         const newPointer = updatePointerMoveData(pointer, posX, posY, canvas);
-        console.log(newPointer)
         setPointers([newPointer])
     };
 

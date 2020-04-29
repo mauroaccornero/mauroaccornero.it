@@ -21,7 +21,6 @@ export function update (
     colorUpdateTimer,
     lastUpdateTime,
 ) {
-    console.log(pointers)
     const dt = calcDeltaTime(lastUpdateTime);
     let internalParameters = {...parameters}
 
