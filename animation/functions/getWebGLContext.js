@@ -1,7 +1,7 @@
 import {getSupportedFormat} from "./getSupportedFormat";
 
 export const getWebGLContext = canvas => {
-    const params = {alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false};
+    const params = {alpha: false, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false};
 
     let gl = canvas.getContext('webgl2', params);
     const isWebGL2 = !!gl;
@@ -11,7 +11,7 @@ export const getWebGLContext = canvas => {
 
     let halfFloat;
     let supportLinearFiltering;
-    if (isWebGL2) {
+    if (isWebGL2 === true) {
         gl.getExtension('EXT_color_buffer_float');
         supportLinearFiltering = gl.getExtension('OES_texture_float_linear');
     } else {
@@ -26,7 +26,7 @@ export const getWebGLContext = canvas => {
     let formatRG;
     let formatR;
 
-    if (isWebGL2) {
+    if (isWebGL2 === true) {
         formatRGBA = getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, halfFloatTexType);
         formatRG = getSupportedFormat(gl, gl.RG16F, gl.RG, halfFloatTexType);
         formatR = getSupportedFormat(gl, gl.R16F, gl.RED, halfFloatTexType);
@@ -43,7 +43,7 @@ export const getWebGLContext = canvas => {
             formatRG,
             formatR,
             halfFloatTexType,
-            supportLinearFiltering
+            supportLinearFiltering,
         }
     };
 }

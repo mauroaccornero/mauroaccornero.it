@@ -7,12 +7,12 @@ export const applyInputs = (splatStack, pointers, parameters, gl, blit, programs
         newSplatStack.pop();
         multipleSplats(newSplatStack, parameters, gl, blit, programs, canvas, config);
     }
-
-    pointers.forEach(p => {
-        if (p.moved) {
-            p.moved = false;
-            splatPointer(p, config, parameters, gl, blit, programs, canvas);
+    for(let p = 0; p < pointers.length;p++){
+        const pointer = pointers[p]
+        if (pointer.moved) {
+            pointer.moved = false;
+            splatPointer(pointer, config, parameters, gl, blit, programs, canvas);
         }
-    });
+    }
     return newSplatStack
 }

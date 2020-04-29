@@ -8,7 +8,7 @@ export const compileShader = (type, source, gl, keywords) => {
     gl.compileShader(shader);
 
 /*
-  TODO: OPTIMIZE
+  TODO: OPTIMIZE KHR_parallel_shader_compile
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         throw gl.getShaderInfoLog(shader);
     }

@@ -1,3 +1,4 @@
+/*
 import { compileShader} from "../classes/functions/compileShader";
 
 export const baseVertexShader = gl => compileShader(gl.VERTEX_SHADER, `
@@ -473,3 +474,4 @@ export const gradientSubtractShader = gl => compileShader(gl.FRAGMENT_SHADER, `
         gl_FragColor = vec4(velocity, 0.0, 1.0);
     }
 `,gl);
+*/

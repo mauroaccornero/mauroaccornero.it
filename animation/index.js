@@ -20,13 +20,14 @@ import {scaleByPixelRatio} from "./functions/scaleByPixelRatio";
 import {updatePointerDownData} from "./functions/updatePointerDownData";
 import {updatePointerMoveData} from "./functions/updatePointerMoveData";
 import {updatePointerUpData} from "./functions/updatePointerUpData";
+import {makeProgramsNew} from "./functions/makeProgramsNew";
 
 const useAnimation = canvasRef => {
     const [config, setConfig] = useState(animationConfig);
     const [splatStack, setSplatStack] = useState([]);
     const pointer = pointerPrototype()
     const pointers = useRef([pointer])
-    const requestRef = useRef();
+    //const requestRef = useRef();
     const gl = useRef()
     const ext = useRef()
 
@@ -35,7 +36,6 @@ const useAnimation = canvasRef => {
         let internalParameters = {...parameters}
 
         if (resizeCanvas(canvasRef.current)) {
-            console.log("sfdsasad")
             internalParameters = initFramebuffers(config, gl.current, ext.current, internalParameters, programs, blit);
         }
 
@@ -66,12 +66,12 @@ const useAnimation = canvasRef => {
         );
 
         const cb = () => update(config,internalParameters,newSplatStack,programs,blit,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime)
-        requestRef.current = requestAnimationFrame(cb);
+        requestAnimationFrame(cb);
     }
 
     const animate = () => {
-        resizeCanvas(canvasRef.current)
         const webGLContext = getWebGLContext(canvasRef.current);
+        resizeCanvas(canvasRef.current)
         gl.current = webGLContext.gl
         ext.current = webGLContext.ext
         if (isMobile()) { setConfig(config => ({...config, DYE_RESOLUTION: 512}))}
@@ -110,8 +110,8 @@ const useAnimation = canvasRef => {
         }
 
         let ditheringTexture = createTextureAsync('/textures/LDR_LLL1_0.png', gl.current);
-        const programs = makePrograms(gl.current, ext.current)
-        const displayMaterial = new Material(baseVertexShader(gl.current), displayShaderSource(), gl.current);
+
+        const {programs, displayMaterial} = makeProgramsNew(gl.current, ext.current)
         updateKeywords(config, displayMaterial);
         parameters = initFramebuffers(config, gl.current, ext.current, parameters, programs, blit);
         multipleSplats(parseInt(Math.random() * 20) + 5, parameters, gl.current, blit, programs, canvasRef.current, config);
@@ -119,7 +119,7 @@ const useAnimation = canvasRef => {
         let lastUpdateTime = Date.now();
         let colorUpdateTimer = 0.0;
 
-        update(
+         update(
             config,
             parameters,
             splatStack,
@@ -130,11 +130,15 @@ const useAnimation = canvasRef => {
             colorUpdateTimer,
             lastUpdateTime,
         );
+
     }
 
     React.useEffect(() => {
+        animate()
+/*
         requestRef.current = requestAnimationFrame(animate);
         return () => cancelAnimationFrame(requestRef.current);
+*/
     }, []);
 
     const handleMouseDown = e  => {

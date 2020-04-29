@@ -20,8 +20,7 @@ export class Material {
         }
 
         let program = this.programs[hash];
-        if (program == null)
-        {
+        if (program == null){
             let fragmentShader = compileShader(this.gl.FRAGMENT_SHADER, this.fragmentShaderSource, this.gl, keywords);
             program = createProgram(this.vertexShader, fragmentShader, this.gl);
             this.programs[hash] = program;

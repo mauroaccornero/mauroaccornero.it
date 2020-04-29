@@ -5,7 +5,6 @@ export const createProgram = (vertexShader, fragmentShader, gl) => {
     gl.linkProgram(program);
 
 /*
-    TODO: OPTIMIZE
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)){
         console.error('Link failed: ' + gl.getProgramInfoLog(prog));
         console.error('vs info-log: ' + gl.getShaderInfoLog(vertexShader));

@@ -11,7 +11,7 @@ import {
     clearShader,
     colorShader,
     copyShader,
-    curlShader,
+    curlShader, displayShaderSource,
     divergenceShader,
     gradientSubtractShader,
     pressureShader,
@@ -20,11 +20,12 @@ import {
     sunraysShader,
     vorticityShader
 } from "./shaders";
+import {Material} from "../classes/Material";
 
 export const makePrograms = (gl, ext) => {
     const baseVertexShaderPerformance = baseVertexShader(gl)
 
-    const programs = {
+    let programs = {
         advectionProgram: new Program(baseVertexShaderPerformance, advectionShader(gl, ext), gl),
         bloomBlurProgram: new Program(baseVertexShaderPerformance, bloomBlurShader(gl), gl),
         bloomFinalProgram: new Program(baseVertexShaderPerformance, bloomFinalShader(gl), gl),
@@ -44,7 +45,7 @@ export const makePrograms = (gl, ext) => {
         vorticityProgram: new Program(baseVertexShaderPerformance, vorticityShader(gl), gl),
     }
 
-    const programsArray = Object.entries(programs)
+    let programsArray = Object.entries(programs)
 
     programsArray.map(program => program[1].setProgram())
 
@@ -55,5 +56,7 @@ export const makePrograms = (gl, ext) => {
         newPrograms[programKey] = programValue
     })
 
-    return newPrograms
+    const displayMaterial = new Material(baseVertexShaderPerformance, displayShaderSource(), gl);
+
+    return {programs: newPrograms, displayMaterial}
 }
