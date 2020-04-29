@@ -1,7 +1,7 @@
 import { resizeFBO } from "./resizeFBO";
 import { createFBO } from "./createFBO";
 
-export function resizeDoubleFBO (target, w, h, internalFormat, format, type, param, copyProgram, gl, blit) {
+export const resizeDoubleFBO = (target, w, h, internalFormat, format, type, param, copyProgram, gl, blit) => {
     if (target.width == w && target.height == h){
         return target;
     }

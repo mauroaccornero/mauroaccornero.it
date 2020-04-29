@@ -1,47 +1,70 @@
-import {useEffect, useState} from "react";
-/* config */
-import {config as animationConfig} from "./config";
-
-/* canvas utils */
+import React,{useRef, useState} from 'react'
 import {resizeCanvas} from "./functions/resizeCanvas";
-import {isMobile} from "./functions/isMobile";
-
-/*prototype*/
-import {pointerPrototype} from "./functions/pointerPrototype";
-
-/* webgl utils */
+import {config as animationConfig} from "./config";
 import {getWebGLContext} from "./functions/getWebGLContext";
-
-/* classes */
+import {isMobile} from "./functions/isMobile";
+import {createTextureAsync} from "./functions/createTextureAsync";
+import {makePrograms} from "./functions/makePrograms";
 import {Material} from "./classes/Material";
+import {baseVertexShader, displayShaderSource} from "./functions/shaders";
 import {updateKeywords} from "./classes/functions/updateKeywords";
-
-/* shaders */
-import {
-    baseVertexShader,
-    displayShaderSource,
-} from "./functions/shaders";
-
-/* functions */
 import {initFramebuffers} from "./functions/initFrameBuffers";
 import {multipleSplats} from "./functions/multipleSplats";
-import {createTextureAsync} from "./functions/createTextureAsync";
-import {update} from "./functions/update";
+import {pointerPrototype} from "./functions/pointerPrototype";
+import {calcDeltaTime} from "./functions/calcDeltaTime";
+import {updateColors} from "./functions/updateColors";
+import {applyInputs} from "./functions/applyInputs";
+import {step} from "./functions/step";
+import {render} from "./functions/render";
 import {scaleByPixelRatio} from "./functions/scaleByPixelRatio";
 import {updatePointerDownData} from "./functions/updatePointerDownData";
 import {updatePointerMoveData} from "./functions/updatePointerMoveData";
 import {updatePointerUpData} from "./functions/updatePointerUpData";
-import {makePrograms} from "./functions/makePrograms";
 
-
-export const useAnimation = (canvasRef) => {
+const useAnimation = canvasRef => {
     const [config, setConfig] = useState(animationConfig);
-    const pointer = pointerPrototype()
-    const [pointers, setPointers] = useState([pointer]);
     const [splatStack, setSplatStack] = useState([]);
+    const pointer = pointerPrototype()
+    const pointers = useRef([pointer])
+    const requestRef = useRef();
 
+    const update = (config,gl,ext,parameters,splatStack,programs,blit,canvas,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime) => {
+        const dt = calcDeltaTime(lastUpdateTime);
+        let internalParameters = {...parameters}
 
-    useEffect(() => {
+        if (resizeCanvas(canvas)) {
+            internalParameters = initFramebuffers(config, gl, ext, internalParameters, programs, blit);
+        }
+
+        updateColors(dt, config, pointers, colorUpdateTimer);
+
+        const newSplatStack = applyInputs(splatStack, pointers.current, internalParameters, gl, blit, programs, canvas, config);
+
+        if (!config.PAUSED) {
+            step(dt,
+                gl,
+                config,
+                blit,
+                ext,
+                internalParameters,
+                programs
+            );
+        }
+        render(null,
+            config,
+            gl,
+            blit,
+            canvas,
+            displayMaterial,
+            ditheringTexture,
+            internalParameters,
+            programs
+        );
+        const cb = () => update(config,gl,ext,parameters,splatStack,programs,blit,canvas,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime)
+        requestRef.current = requestAnimationFrame(cb);
+    }
+
+    const animate = () => {
         const canvas = canvasRef.current
         resizeCanvas(canvas)
         const {gl, ext} = getWebGLContext(canvas);
@@ -78,6 +101,7 @@ export const useAnimation = (canvasRef) => {
             sunrays: {},
             sunraysTemp: {},
         }
+
         let ditheringTexture = createTextureAsync('/textures/LDR_LLL1_0.png', gl);
         const programs = makePrograms(gl, ext)
         const displayMaterial = new Material(baseVertexShader(gl), displayShaderSource(), gl);
@@ -87,12 +111,12 @@ export const useAnimation = (canvasRef) => {
 
         let lastUpdateTime = Date.now();
         let colorUpdateTimer = 0.0;
+
         update(
             config,
             gl,
             ext,
             parameters,
-            pointers,
             splatStack,
             programs,
             blit,
@@ -102,88 +126,74 @@ export const useAnimation = (canvasRef) => {
             colorUpdateTimer,
             lastUpdateTime,
         );
+    }
+
+    React.useEffect(() => {
+        requestRef.current = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(requestRef.current);
     }, []);
 
-
-    const handleMouseDown = (e, pointers, canvas) => {
+    const handleMouseDown = e  => {
         let posX = scaleByPixelRatio(e.nativeEvent.offsetX);
         let posY = scaleByPixelRatio(e.nativeEvent.offsetY);
-        let pointer = pointers.find(p => p.id == -1);
+        let pointer = pointers.current.find(p => p.id == -1);
         if (pointer == null) {
             pointer = pointerPrototype();
         }
-        const newPointer = updatePointerDownData(pointer, -1, posX, posY, canvas);
-        setPointers([newPointer])
+        const newPointer = updatePointerDownData(pointer, -1, posX, posY, canvasRef.current);
+        pointers.current = [newPointer]
     };
 
-    const handleMouseMove = (e, pointers, canvas) => {
-        let pointer = pointers[0];
+    const handleMouseMove = e => {
+        let pointer = pointers.current[0];
         if (!pointer.down) {
             return;
         }
         let posX = scaleByPixelRatio(e.nativeEvent.offsetX);
         let posY = scaleByPixelRatio(e.nativeEvent.offsetY);
-        const newPointer = updatePointerMoveData(pointer, posX, posY, canvas);
-        setPointers([newPointer])
-    };
-
-    const handleMouseUp = (e, pointers) => {
-        const newPointer = updatePointerUpData(pointers[0]);
-        setPointers([newPointer])
-    };
-
-    const handleTouchStart = (e, pointers, canvas) => {
-        e.preventDefault();
-        const touches = e.nativeEvent.targetTouches;
-        const newPointers = []
-        while (touches.length >= pointers.length) {
-            pointers.push(pointerPrototype());
-        }
-        for (let i = 0; i < touches.length; i++) {
-            let posX = scaleByPixelRatio(touches[i].pageX);
-            let posY = scaleByPixelRatio(touches[i].pageY);
-            newPointers.push(updatePointerDownData(pointers[i + 1], touches[i].identifier, posX, posY, canvas))
-        }
-        setPointers([...newPointers])
-    };
-
-    const handleTouchMove = (e, pointers, canvas) => {
-        e.preventDefault();
-        const touches = e.nativeEvent.targetTouches;
-        const newPointers = []
-        for (let i = 0; i < touches.length; i++) {
-            let pointer = pointers[i + 1];
-            if (!pointer.down) {
-                continue;
-            }
-            let posX = scaleByPixelRatio(touches[i].pageX);
-            let posY = scaleByPixelRatio(touches[i].pageY);
-            newPointers.push(updatePointerMoveData(pointer, posX, posY, canvas))
-        }
-        setPointers([...newPointers])
-    };
-
-    const handleTouchEnd = (e, pointers) => {
-        const touches = e.nativeEvent.changedTouches;
-        const newPointers = []
-        for (let i = 0; i < touches.length; i++) {
-            let pointer = pointers.find(p => p.id == touches[i].identifier);
-            if (pointer == null) {
-                continue;
-            }
-            newPointers.push(updatePointerUpData(pointer));
-        }
-        setPointers([...newPointers])
-    };
-
-    return {
-        pointers,
-        handleMouseDown,
-        handleMouseUp,
-        handleMouseMove,
-        handleTouchStart,
-        handleTouchEnd,
-        handleTouchMove,
-        canvas: canvasRef.current
+        const newPointer = updatePointerMoveData(pointer, posX, posY, canvasRef.current);
+        pointers.current = [newPointer]
     }
+
+    const handleMouseUp = () => {
+        let pointer = pointers.current[0];
+        const newPointer = updatePointerUpData(pointer);
+        pointers.current = [newPointer]
+    };
+    return { handleMouseMove, handleMouseUp, handleMouseDown }
+}
+
+export const Animation = () => {
+    const ref = useRef(null);
+    const {handleMouseMove, handleMouseDown, handleMouseUp} = useAnimation(ref)
+    return (<>
+        <canvas
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseDown={handleMouseDown}
+            ref={ref}></canvas>
+        <style jsx global>{`
+                * {
+                user-select: none;
+                margin: 0;
+                padding: 0;
+            }
+
+                html, body {
+                overflow: hidden;
+                background-color: #000;
+            }
+
+                body {
+                margin: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+            }
+            canvas{
+                width: 100%;
+                height: 100vh;
+            }
+            `}</style>
+    </>)
 }

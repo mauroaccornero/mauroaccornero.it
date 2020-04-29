@@ -6,7 +6,7 @@ import {blur} from "./blur";
 import {applySunrays} from "./applySunrays";
 import { normalizeColor} from "./normalizeColor";
 
-export function render (
+export const render = (
     target,
     config,
     gl,
@@ -16,7 +16,7 @@ export function render (
     ditheringTexture,
     parameters,
     programs
-) {
+) => {
     const {
         bloomFinalProgram,
         bloomPrefilterProgram,

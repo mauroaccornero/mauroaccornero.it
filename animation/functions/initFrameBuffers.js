@@ -5,7 +5,7 @@ import {initBloomFramebuffers} from "./initBloomFramebuffers";
 import {initSunraysFramebuffers} from "./initSunraysFramebuffers";
 import {createFBO} from "./createFBO";
 
-export function initFramebuffers(config, gl, ext, parameters, programs, blit) {
+export const initFramebuffers = (config, gl, ext, parameters, programs, blit) => {
     let simRes = getResolution(config.SIM_RESOLUTION, gl);
     let dyeRes = getResolution(config.DYE_RESOLUTION, gl);
 

@@ -7,7 +7,7 @@ export const Page = props => {
             <Head>
                 <title>My page title</title>
                 <meta property="og:title" content="My page title" key="title" />
-                <link href="/static/css/styles.css" rel="stylesheet" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
             </Head>
             {props.children}
         </div>

@@ -1,4 +1,4 @@
-export function step (
+export const step = (
     dt,
     gl,
     config,
@@ -6,7 +6,7 @@ export function step (
     ext,
     parameters,
     programs
-) {
+) => {
     const {
         curlProgram,
         vorticityProgram,

@@ -1,3 +1,1 @@
-export function isMobile () {
-    return /Mobi|Android/i.test(navigator.userAgent);
-}
+export const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);

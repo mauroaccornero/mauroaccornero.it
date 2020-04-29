@@ -1,4 +1,4 @@
-export function supportRenderTextureFormat (gl, internalFormat, format, type) {
+export const supportRenderTextureFormat = (gl, internalFormat, format, type) => {
     let texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);

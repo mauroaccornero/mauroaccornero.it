@@ -1,7 +1,7 @@
 import {generateColor} from "./generateColor";
 import { splat} from "./splat";
 
-export function multipleSplats(amount, parameters, gl, blit, programs, canvas, config) {
+export const multipleSplats = (amount, parameters, gl, blit, programs, canvas, config) => {
     for (let i = 0; i < amount; i++) {
         const color = generateColor();
         color.r *= 10.0;

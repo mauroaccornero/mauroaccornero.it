@@ -1,7 +1,7 @@
 import { generateColor} from "./generateColor";
 import { wrap} from "./wrap";
 
-export function updateColors (dt, config, pointers, colorUpdateTimer) {
+export const updateColors = (dt, config, pointers, colorUpdateTimer) => {
     if (!config.COLORFUL) return;
 
     colorUpdateTimer += dt * config.COLOR_UPDATE_SPEED;

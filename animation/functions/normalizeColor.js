@@ -1,4 +1,4 @@
-export function normalizeColor(input) {
+export const normalizeColor = input => {
     let output = {
         r: input.r / 255,
         g: input.g / 255,

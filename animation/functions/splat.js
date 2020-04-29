@@ -1,6 +1,6 @@
 import { correctRadius} from "./correctRadius";
 
-export function splat (x, y, dx, dy, color, parameters, gl, blit, programs, canvas, config) {
+export const splat = (x, y, dx, dy, color, parameters, gl, blit, programs, canvas, config) => {
     const { velocity, dye } = parameters
     const { splatProgram } = programs
 

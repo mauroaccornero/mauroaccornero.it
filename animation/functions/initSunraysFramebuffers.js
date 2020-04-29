@@ -1,7 +1,7 @@
 import { getResolution} from "./getResolution";
 import { createFBO} from "./createFBO";
 
-export function initSunraysFramebuffers ( ext, gl, config) {
+export const initSunraysFramebuffers = ( ext, gl, config) => {
     let res = getResolution(config.SUNRAYS_RESOLUTION, gl);
 
     const texType = ext.halfFloatTexType;
