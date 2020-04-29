@@ -1,6 +1,6 @@
 import { getTextureScale} from "./getTextureScale";
 
-export function drawDisplay (fbo, width, height, gl, blit, config, displayMaterial, ditheringTexture, dye, bloom, sunrays) {
+export const drawDisplay = (fbo, width, height, gl, blit, config, displayMaterial, ditheringTexture, dye, bloom, sunrays) => {
     displayMaterial.bind();
     if (config.SHADING)
         gl.uniform2f(displayMaterial.uniforms.texelSize, 1.0 / width, 1.0 / height);

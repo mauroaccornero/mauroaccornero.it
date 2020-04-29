@@ -1,6 +1,6 @@
-export function getResolution (resolution, gl) {
+export const getResolution = (resolution, gl) => {
     let aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
-    if (aspectRatio < 1){
+    if (aspectRatio < 1) {
         aspectRatio = 1.0 / aspectRatio;
     }
     let min = Math.round(resolution);
@@ -8,7 +8,7 @@ export function getResolution (resolution, gl) {
 
     if (gl.drawingBufferWidth > gl.drawingBufferHeight) {
         return {width: max, height: min};
-    }else {
+    } else {
         return {width: min, height: max};
     }
 }

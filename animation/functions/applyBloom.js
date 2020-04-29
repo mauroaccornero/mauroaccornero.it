@@ -1,4 +1,4 @@
-export function applyBloom (source, destination, gl, config, bloomFramebuffers, bloomFinalProgram, bloomPrefilterProgram, bloomBlurProgram, blit) {
+export const applyBloom = (source, destination, gl, config, bloomFramebuffers, bloomFinalProgram, bloomPrefilterProgram, bloomBlurProgram, blit) => {
     if (bloomFramebuffers.length < 2)
         return;
 

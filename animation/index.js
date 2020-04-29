@@ -27,66 +27,73 @@ const useAnimation = canvasRef => {
     const pointer = pointerPrototype()
     const pointers = useRef([pointer])
     const requestRef = useRef();
+    const gl = useRef()
+    const ext = useRef()
 
-    const update = (config,gl,ext,parameters,splatStack,programs,blit,canvas,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime) => {
+    const update = (config,parameters,splatStack,programs,blit,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime) => {
         const dt = calcDeltaTime(lastUpdateTime);
         let internalParameters = {...parameters}
 
-        if (resizeCanvas(canvas)) {
-            internalParameters = initFramebuffers(config, gl, ext, internalParameters, programs, blit);
+        if (resizeCanvas(canvasRef.current)) {
+            console.log("sfdsasad")
+            internalParameters = initFramebuffers(config, gl.current, ext.current, internalParameters, programs, blit);
         }
 
         updateColors(dt, config, pointers, colorUpdateTimer);
 
-        const newSplatStack = applyInputs(splatStack, pointers.current, internalParameters, gl, blit, programs, canvas, config);
+        const newSplatStack = applyInputs(splatStack, pointers.current, internalParameters, gl.current, blit, programs, canvasRef.current, config);
 
         if (!config.PAUSED) {
             step(dt,
-                gl,
+                gl.current,
                 config,
                 blit,
-                ext,
+                ext.current,
                 internalParameters,
                 programs
             );
         }
+
         render(null,
             config,
-            gl,
+            gl.current,
             blit,
-            canvas,
+            canvasRef.current,
             displayMaterial,
             ditheringTexture,
             internalParameters,
             programs
         );
-        const cb = () => update(config,gl,ext,parameters,splatStack,programs,blit,canvas,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime)
+
+        const cb = () => update(config,internalParameters,newSplatStack,programs,blit,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime)
         requestRef.current = requestAnimationFrame(cb);
     }
 
     const animate = () => {
-        const canvas = canvasRef.current
-        resizeCanvas(canvas)
-        const {gl, ext} = getWebGLContext(canvas);
+        resizeCanvas(canvasRef.current)
+        const webGLContext = getWebGLContext(canvasRef.current);
+        gl.current = webGLContext.gl
+        ext.current = webGLContext.ext
         if (isMobile()) { setConfig(config => ({...config, DYE_RESOLUTION: 512}))}
-
         if (typeof ext.supportLinearFiltering !== "undefined" && ext.supportLinearFiltering) {
-            setConfig(config => ({...config, DYE_RESOLUTION: 512}))
-            setConfig(config => ({...config, SHADING: false}))
-            setConfig(config => ({...config, BLOOM: false}))
-            setConfig(config => ({...config, SUNRAYS: false}))
+            setConfig(config => ({...config,
+                DYE_RESOLUTION: 512,
+                SHADING: false,
+                BLOOM: false,
+                SUNRAYS: false
+            }))
         }
 
         const blit = (() => {
-            gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.STATIC_DRAW);
-            gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-            gl.enableVertexAttribArray(0);
+            gl.current.bindBuffer(gl.current.ARRAY_BUFFER, gl.current.createBuffer());
+            gl.current.bufferData(gl.current.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.current.STATIC_DRAW);
+            gl.current.bindBuffer(gl.current.ELEMENT_ARRAY_BUFFER, gl.current.createBuffer());
+            gl.current.bufferData(gl.current.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.current.STATIC_DRAW);
+            gl.current.vertexAttribPointer(0, 2, gl.current.FLOAT, false, 0, 0);
+            gl.current.enableVertexAttribArray(0);
             return (destination) => {
-                gl.bindFramebuffer(gl.FRAMEBUFFER, destination);
-                gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+                gl.current.bindFramebuffer(gl.current.FRAMEBUFFER, destination);
+                gl.current.drawElements(gl.current.TRIANGLES, 6, gl.current.UNSIGNED_SHORT, 0);
             }
         })();
 
@@ -102,25 +109,22 @@ const useAnimation = canvasRef => {
             sunraysTemp: {},
         }
 
-        let ditheringTexture = createTextureAsync('/textures/LDR_LLL1_0.png', gl);
-        const programs = makePrograms(gl, ext)
-        const displayMaterial = new Material(baseVertexShader(gl), displayShaderSource(), gl);
+        let ditheringTexture = createTextureAsync('/textures/LDR_LLL1_0.png', gl.current);
+        const programs = makePrograms(gl.current, ext.current)
+        const displayMaterial = new Material(baseVertexShader(gl.current), displayShaderSource(), gl.current);
         updateKeywords(config, displayMaterial);
-        parameters = initFramebuffers(config, gl, ext, parameters, programs, blit);
-        multipleSplats(parseInt(Math.random() * 20) + 5, parameters, gl, blit, programs, canvas, config);
+        parameters = initFramebuffers(config, gl.current, ext.current, parameters, programs, blit);
+        multipleSplats(parseInt(Math.random() * 20) + 5, parameters, gl.current, blit, programs, canvasRef.current, config);
 
         let lastUpdateTime = Date.now();
         let colorUpdateTimer = 0.0;
 
         update(
             config,
-            gl,
-            ext,
             parameters,
             splatStack,
             programs,
             blit,
-            canvas,
             displayMaterial,
             ditheringTexture,
             colorUpdateTimer,
@@ -137,18 +141,14 @@ const useAnimation = canvasRef => {
         let posX = scaleByPixelRatio(e.nativeEvent.offsetX);
         let posY = scaleByPixelRatio(e.nativeEvent.offsetY);
         let pointer = pointers.current.find(p => p.id == -1);
-        if (pointer == null) {
-            pointer = pointerPrototype();
-        }
+        if (pointer == null) {pointer = pointerPrototype();}
         const newPointer = updatePointerDownData(pointer, -1, posX, posY, canvasRef.current);
         pointers.current = [newPointer]
     };
 
     const handleMouseMove = e => {
         let pointer = pointers.current[0];
-        if (!pointer.down) {
-            return;
-        }
+        if (!pointer.down) { return;}
         let posX = scaleByPixelRatio(e.nativeEvent.offsetX);
         let posY = scaleByPixelRatio(e.nativeEvent.offsetY);
         const newPointer = updatePointerMoveData(pointer, posX, posY, canvasRef.current);
@@ -171,7 +171,7 @@ export const Animation = () => {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseDown={handleMouseDown}
-            ref={ref}></canvas>
+            ref={ref} />
         <style jsx global>{`
                 * {
                 user-select: none;

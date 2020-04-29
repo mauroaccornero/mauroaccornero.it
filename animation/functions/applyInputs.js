@@ -1,7 +1,7 @@
 import {multipleSplats} from "./multipleSplats";
 import {splatPointer} from "./splatPointer";
 
-export function applyInputs(splatStack, pointers, parameters, gl, blit, programs, canvas, config) {
+export const applyInputs = (splatStack, pointers, parameters, gl, blit, programs, canvas, config) => {
     let newSplatStack = splatStack
     if (splatStack.length > 0) {
         newSplatStack.pop();

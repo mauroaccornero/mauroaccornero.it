@@ -5,8 +5,18 @@ export class Program {
     constructor (vertexShader, fragmentShader,gl) {
         this.gl = gl,
         this.uniforms = {};
-        this.program = createProgram(vertexShader, fragmentShader, this.gl);
-        this.uniforms = getUniforms(this.program, this.gl);
+        this.vertexShader = vertexShader
+        this.fragmentShader = fragmentShader
+        this.program = null
+        this.uniforms = null
+    }
+
+    setProgram() {
+        this.program = createProgram(this.vertexShader, this.fragmentShader, this.gl);
+    }
+
+    setUniform() {
+        this.uniforms = getUniforms(this.program, this.gl)
     }
 
     bind () {

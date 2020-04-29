@@ -1,4 +1,4 @@
-export function createTextureAsync (url,gl) {
+export const createTextureAsync = (url,gl) => {
     let texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);

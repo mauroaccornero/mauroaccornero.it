@@ -1,4 +1,4 @@
-export function createFBO (w, h, internalFormat, format, type, param, gl) {
+export const createFBO = (w, h, internalFormat, format, type, param, gl) => {
     gl.activeTexture(gl.TEXTURE0);
 
     let texture = gl.createTexture();

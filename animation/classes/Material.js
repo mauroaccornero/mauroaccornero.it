@@ -15,8 +15,9 @@ export class Material {
 
     setKeywords (keywords) {
         let hash = 0;
-        for (let i = 0; i < keywords.length; i++)
+        for (let i = 0; i < keywords.length; i++) {
             hash += hashCode(keywords[i]);
+        }
 
         let program = this.programs[hash];
         if (program == null)
@@ -26,7 +27,7 @@ export class Material {
             this.programs[hash] = program;
         }
 
-        if (program == this.activeProgram) return;
+        if (program == this.activeProgram){ return; }
 
         this.uniforms = getUniforms(program, this.gl);
         this.activeProgram = program;

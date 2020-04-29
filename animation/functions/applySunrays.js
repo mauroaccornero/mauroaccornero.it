@@ -1,4 +1,4 @@
-export function applySunrays(source, mask, destination, gl, sunraysMaskProgram, blit, sunraysProgram, config) {
+export const applySunrays = (source, mask, destination, gl, sunraysMaskProgram, blit, sunraysProgram, config) => {
     gl.disable(gl.BLEND);
     sunraysMaskProgram.bind();
     gl.uniform1i(sunraysMaskProgram.uniforms.uTexture, source.attach(0));

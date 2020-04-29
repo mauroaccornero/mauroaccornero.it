@@ -1,4 +1,4 @@
-export function blur(target, temp, iterations, gl, blit, blurProgram) {
+export const blur = (target, temp, iterations, gl, blit, blurProgram) => {
     blurProgram.bind();
     for (let i = 0; i < iterations; i++) {
         gl.uniform2f(blurProgram.uniforms.texelSize, target.texelSizeX, 0.0);

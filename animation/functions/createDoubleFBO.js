@@ -1,6 +1,6 @@
 import { createFBO} from "./createFBO";
 
-export function createDoubleFBO (w, h, internalFormat, format, type, param, gl) {
+export const createDoubleFBO = (w, h, internalFormat, format, type, param, gl) => {
     let fbo1 = createFBO(w, h, internalFormat, format, type, param, gl);
     let fbo2 = createFBO(w, h, internalFormat, format, type, param, gl);
 
