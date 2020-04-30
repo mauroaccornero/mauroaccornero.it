@@ -4,9 +4,6 @@ import {config as animationConfig} from "./config";
 import {getWebGLContext} from "./functions/getWebGLContext";
 import {isMobile} from "./functions/isMobile";
 import {createTextureAsync} from "./functions/createTextureAsync";
-import {makePrograms} from "./functions/makePrograms";
-import {Material} from "./classes/Material";
-import {baseVertexShader, displayShaderSource} from "./functions/shaders";
 import {updateKeywords} from "./classes/functions/updateKeywords";
 import {initFramebuffers} from "./functions/initFrameBuffers";
 import {multipleSplats} from "./functions/multipleSplats";
@@ -20,14 +17,13 @@ import {scaleByPixelRatio} from "./functions/scaleByPixelRatio";
 import {updatePointerDownData} from "./functions/updatePointerDownData";
 import {updatePointerMoveData} from "./functions/updatePointerMoveData";
 import {updatePointerUpData} from "./functions/updatePointerUpData";
-import {makeProgramsNew} from "./functions/makeProgramsNew";
+import {makePrograms} from "./functions/makePrograms";
 
 const useAnimation = canvasRef => {
     const [config, setConfig] = useState(animationConfig);
     const [splatStack, setSplatStack] = useState([]);
     const pointer = pointerPrototype()
     const pointers = useRef([pointer])
-    //const requestRef = useRef();
     const gl = useRef()
     const ext = useRef()
 
@@ -111,7 +107,7 @@ const useAnimation = canvasRef => {
 
         let ditheringTexture = createTextureAsync('/textures/LDR_LLL1_0.png', gl.current);
 
-        const {programs, displayMaterial} = makeProgramsNew(gl.current, ext.current)
+        const {programs, displayMaterial} = makePrograms(gl.current, ext.current)
         updateKeywords(config, displayMaterial);
         parameters = initFramebuffers(config, gl.current, ext.current, parameters, programs, blit);
         multipleSplats(parseInt(Math.random() * 20) + 5, parameters, gl.current, blit, programs, canvasRef.current, config);
@@ -135,10 +131,6 @@ const useAnimation = canvasRef => {
 
     React.useEffect(() => {
         animate()
-/*
-        requestRef.current = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(requestRef.current);
-*/
     }, []);
 
     const handleMouseDown = e  => {
@@ -187,7 +179,6 @@ export const Animation = () => {
                 overflow: hidden;
                 background-color: #000;
             }
-
                 body {
                 margin: 0;
                 position: fixed;
