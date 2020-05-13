@@ -18,6 +18,7 @@ import {updatePointerDownData} from "./functions/updatePointerDownData";
 import {updatePointerMoveData} from "./functions/updatePointerMoveData";
 import {updatePointerUpData} from "./functions/updatePointerUpData";
 import {makePrograms} from "./functions/makePrograms";
+import {splat} from "./functions/splat";
 
 const useAnimation = canvasRef => {
     const [config, setConfig] = useState(animationConfig);
@@ -26,17 +27,29 @@ const useAnimation = canvasRef => {
     const pointers = useRef([pointer])
     const gl = useRef()
     const ext = useRef()
+    const interval = useRef(0)
+    const lastUpdateTime = useRef()
+    const colorUpdateTimer = useRef(0.0)
 
-    const update = (config,parameters,splatStack,programs,blit,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime) => {
-        const dt = calcDeltaTime(lastUpdateTime);
+    const update = (config,parameters,splatStack,programs,blit,displayMaterial,ditheringTexture) => {
+        interval.current = interval.current + ((Date.now() - lastUpdateTime.current) / 1000)
+
+        if(Math.round(interval.current) === 5){
+            console.log("5 seconds")
+            //multipleSplats(parseInt(Math.random() * (10 - 3)) + 3, parameters, gl.current, blit, programs, canvasRef.current, config);
+            interval.current = 0
+        }
+
+        const dt = calcDeltaTime(lastUpdateTime.current);
+        lastUpdateTime.current = Date.now()
         let internalParameters = {...parameters}
 
         if (resizeCanvas(canvasRef.current)) {
             internalParameters = initFramebuffers(config, gl.current, ext.current, internalParameters, programs, blit);
         }
-
-        updateColors(dt, config, pointers, colorUpdateTimer);
-
+        const {np, cut} = updateColors(dt, config, pointers.current, colorUpdateTimer.current);
+        pointers.current = np
+        colorUpdateTimer.current = cut
         const newSplatStack = applyInputs(splatStack, pointers.current, internalParameters, gl.current, blit, programs, canvasRef.current, config);
 
         if (!config.PAUSED) {
@@ -61,7 +74,7 @@ const useAnimation = canvasRef => {
             programs
         );
 
-        const cb = () => update(config,internalParameters,newSplatStack,programs,blit,displayMaterial,ditheringTexture,colorUpdateTimer,lastUpdateTime)
+        const cb = () => update(config,internalParameters,newSplatStack,programs,blit,displayMaterial,ditheringTexture,colorUpdateTimer.current,lastUpdateTime.current)
         requestAnimationFrame(cb);
     }
 
@@ -110,10 +123,10 @@ const useAnimation = canvasRef => {
         const {programs, displayMaterial} = makePrograms(gl.current, ext.current)
         updateKeywords(config, displayMaterial);
         parameters = initFramebuffers(config, gl.current, ext.current, parameters, programs, blit);
-        multipleSplats(parseInt(Math.random() * 20) + 5, parameters, gl.current, blit, programs, canvasRef.current, config);
+        multipleSplats(parseInt(Math.random() * (50 - 40)) + 40, parameters, gl.current, blit, programs, canvasRef.current, config);
 
-        let lastUpdateTime = Date.now();
-        let colorUpdateTimer = 0.0;
+        lastUpdateTime.current = Date.now();
+        colorUpdateTimer.current = 0.0;
 
          update(
             config,
@@ -123,8 +136,6 @@ const useAnimation = canvasRef => {
             blit,
             displayMaterial,
             ditheringTexture,
-            colorUpdateTimer,
-            lastUpdateTime,
         );
 
     }
@@ -132,6 +143,12 @@ const useAnimation = canvasRef => {
     React.useEffect(() => {
         animate()
     }, []);
+
+    const simulateMouseInteraction = () => {
+        //mouse down x, y
+        //mouse move x, y
+        // mouse up x,y
+    }
 
     const handleMouseDown = e  => {
         let posX = scaleByPixelRatio(e.nativeEvent.offsetX);
@@ -177,7 +194,7 @@ export const Animation = () => {
 
                 html, body {
                 overflow: hidden;
-                background-color: #000;
+                background-color: #fff;
             }
                 body {
                 margin: 0;

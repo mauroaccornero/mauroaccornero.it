@@ -5,6 +5,9 @@ export const Page = props => {
     return (
         <div id="page">
             <Head>
+{/*
+                TODO: check title, description, meta, og and favicon
+*/}
                 <title>My page title</title>
                 <meta property="og:title" content="My page title" key="title"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
@@ -14,7 +17,7 @@ export const Page = props => {
             <style jsx>{`
                 #page{
                   display: flex;
-                  align-items: center;
+                  align-items: start;
                   justify-content: center;
                   flex-direction: column;
                     -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */

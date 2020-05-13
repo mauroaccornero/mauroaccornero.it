@@ -7,8 +7,8 @@ export const updateColors = (dt, config, pointers, colorUpdateTimer) => {
     if (colorUpdateTimer >= 1) {
         colorUpdateTimer = wrap(colorUpdateTimer, 0, 1);
         for(let p = 0; p < pointers.length;p++){
-            const pointer = pointers[p]
-            pointer.color = generateColor();
+            pointers[p].color = generateColor();
         };
     }
+    return {np : pointers, cut: colorUpdateTimer}
 }
