@@ -29,7 +29,9 @@ const Homepage = () => {
                         <li><a href="https://it.linkedin.com/in/mauroaccornero/it" target="_blank">Linkedin</a></li>
                     </ul>
                 </div>
+{/*
                 <Animation/>
+*/}
             </Page>
             <style jsx>{`
                 #main{

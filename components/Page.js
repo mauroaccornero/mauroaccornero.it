@@ -14,6 +14,13 @@ export const Page = props => {
                 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;700&display=swap" rel="stylesheet" />
             </Head>
             {props.children}
+            <style jsx global>{`
+                * {
+                user-select: none;
+                margin: 0;
+                padding: 0;
+            }
+            `}</style>
             <style jsx>{`
                 #page{
                   display: flex;
@@ -25,6 +32,7 @@ export const Page = props => {
                         -ms-animation: fadein 2s; /* Internet Explorer */
                          -o-animation: fadein 2s; /* Opera < 12.1 */
                             animation: fadein 2s;
+                            height: 100vh;
                 }
                 
                 @keyframes fadein {
