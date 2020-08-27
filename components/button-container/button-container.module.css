@@ -1,0 +1,19 @@
+.ButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 5vw;
+}
+
+.ButtonContainer li {
+  margin: 0 1vw;
+}
+
+@media (max-width: 420px) {
+    .ButtonContainer {
+        margin-top: 10vw;
+      }
+      
+      .ButtonContainer li {
+        margin: 0 3vw;
+      }
+}
