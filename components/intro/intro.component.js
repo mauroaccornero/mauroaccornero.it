@@ -1,7 +1,7 @@
-import React from "react";
-import { ButtonContainer } from "../button-container/button-container.component";
+import React from 'react';
+import { ButtonContainer } from '../button-container/button-container.component';
 /**/
-import styles from "./intro.module.css";
+import styles from './intro.module.css';
 
 export const Intro = () => {
   return (

@@ -4,7 +4,7 @@
     padding: 0;
   }
   body {
-    font-family: "Prompt", sans-serif;
+    font-family: 'Prompt', sans-serif;
     background: #4A4E69;
     background: radial-gradient(circle, #4A4E69 0%, #22223b 100%);
     color: #f2e9e4;

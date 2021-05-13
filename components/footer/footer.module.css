@@ -6,11 +6,19 @@
   font-weight:200;
   margin-top: auto;
   mix-blend-mode: luminosity;
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 @media (min-width: 1025px)  { 
   .Footer{
     font-size:1vw;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 700px) {
+  .Footer{
+    font-size:2vw;
   }
 }
 

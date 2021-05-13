@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import PropTypes from 'prop-types'
 /**/
 import styles from './button.module.css'
@@ -15,5 +15,5 @@ Button.propTypes = {
 }
 
 Button.defaultProps = {
-    target: "_blank",
+    target: '_blank',
 }
