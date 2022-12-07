@@ -2,13 +2,15 @@
   "name": "mauroaccornero.it",
   "version": "1.0.0",
   "description": "Mauro Accornero personal website",
-  "main": "index.js",
+  "main": "pages/index.tsx",
   "private": true,
   "scripts": {
     "start:dev": "serve out",
     "dev": "next -p 8080",
     "build": "next build && next export",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,16 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/react": "18.0.26",
+    "@typescript-eslint/eslint-plugin": "^5.45.1",
+    "@typescript-eslint/parser": "^5.45.1",
+    "eslint": "^8.29.0",
+    "eslint-config-next": "13.0.6",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.0",
     "serve": "^14.1.2",
     "webpack-cli": "^5.0.1"
   }

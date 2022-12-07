@@ -49,9 +49,10 @@
 .Certifications ul li a img{
   border:0;
   width: 200px;
+  height:auto
 }
 
-.descr{
+.certificationDescription{
   padding-left: 30px;
   text-align: left;
   font-size: 1.5vw;
