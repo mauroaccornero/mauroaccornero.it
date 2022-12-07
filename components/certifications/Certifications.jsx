@@ -1,8 +1,6 @@
-import React from 'react';
-/**/
 import styles from './certifications.module.css';
 
-export const Certifications = () => {
+function Certifications () {
     return (
         <section className={styles.Certifications}>
             <div>
@@ -36,4 +34,6 @@ export const Certifications = () => {
             </div>
         </section>
     );
-};
+}
+
+export default Certifications

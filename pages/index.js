@@ -1,18 +1,14 @@
-import React from 'react';
-import { Page } from '../components/page/page.component';
-import { Footer } from '../components/footer/footer.component';
-import { Intro } from '../components/intro/intro.component';
-import {Certifications} from '../components/certifications/certifications.component';
-/**/
+import Footer  from '../components/footer/Footer';
+import Intro  from '../components/intro/Intro';
+import Certifications from '../components/certifications/Certifications';
 
-const Homepage = () => {
-  return (
-      <Page>
-        <Intro />
-          <Certifications />
+function Homepage() {
+    return(
+      <>
+          <Intro />
+           <Certifications />
         <Footer />
-      </Page>
-  );
-};
+      </>
+  )}
 
 export default Homepage;

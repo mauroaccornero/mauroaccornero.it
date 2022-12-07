@@ -1,9 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types'
-/**/
 import styles from './button.module.css'
 
-export const Button = props => {
+function Button (props) {
     const { target, href, text} = props
     return <a className={styles.Button} target={target} href={href}>{text}</a>
 }
@@ -17,3 +15,5 @@ Button.propTypes = {
 Button.defaultProps = {
     target: '_blank',
 }
+
+export default Button

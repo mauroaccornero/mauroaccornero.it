@@ -1,9 +1,7 @@
-import React from 'react';
-import { Button } from '../button/button.component';
-/**/
+import Button from '../button/Button';
 import styles from './button-container.module.css'
 
-export const ButtonContainer = props => {
+function ButtonContainer () {
     return (
         <ul className={styles.ButtonContainer}>
               <li>
@@ -15,3 +13,5 @@ export const ButtonContainer = props => {
             </ul>
     )
 }
+
+export default ButtonContainer

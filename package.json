@@ -1,8 +1,9 @@
 {
   "name": "mauroaccornero.it",
   "version": "1.0.0",
-  "description": "mauro accornero personal website",
+  "description": "Mauro Accornero personal website",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "start:dev": "serve out",
     "dev": "next -p 8080",
@@ -13,20 +14,20 @@
     "type": "git",
     "url": "git+https://github.com/mauroaccornero/mauroaccornero.it.git"
   },
-  "author": "mauro accornero",
-  "license": "ISC",
+  "author": "Mauro Accornero",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mauroaccornero/mauroaccornero.it/issues"
   },
   "homepage": "https://github.com/mauroaccornero/mauroaccornero.it#readme",
   "dependencies": {
-    "next": "^10.2.0",
-    "prop-types": "^15.7.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "next": "^13.0.6",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "serve": "^11.3.2",
-    "webpack-cli": "^4.7.0"
+    "serve": "^14.1.2",
+    "webpack-cli": "^5.0.1"
   }
 }
