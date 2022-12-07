@@ -58,8 +58,6 @@
   font-size: 1.5vw;
 }
 
-
-
 @media (max-width: 420px) {
   .Certifications h3 {
     font-size: 6vw;
@@ -74,7 +72,7 @@
   .Certifications ul li a img{
     width: 200px;
   }
-  .descr{
+  .certificationDescription{
     padding: 20px 0 0 0;
     font-size:5vw;
     text-align: center;
@@ -85,7 +83,7 @@
   .Certifications ul li a img{
     width: 200px;
   }
-  .descr{
+  .certificationDescription{
     font-size:4vw;
   }
 }
